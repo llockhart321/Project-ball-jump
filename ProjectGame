@@ -1,0 +1,302 @@
+import javafx.application.*;
+import javafx.scene.*;
+import javafx.stage.*;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import java.util.*;
+import javafx.geometry.*;
+import javafx.scene.paint.*;
+import javafx.scene.image.*;
+import javafx.event.*;
+import javafx.animation.*;
+import javafx.application.*;
+import javafx.scene.*;
+import javafx.stage.*;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
+import java.util.*;
+import javafx.geometry.*;
+import javafx.scene.paint.*;
+import javafx.scene.image.*;
+import javafx.scene.canvas.*;
+import javafx.scene.input.*;
+import javafx.scene.shape.*;
+
+public class ProjectGame extends Application
+{
+   public void start(Stage stage)
+   {  
+      GridPane root = new GridPane();
+      
+      l = new Label("balls left: " + count);
+      root.add(l,5,0);
+      
+      ballB = true;
+      for (int i=0; i<4; i++)
+         {
+         for(int j=0; j<4; j++)
+            {
+            gPane = new GamePane(i, j);
+            gPaneList[i][j]= gPane; 
+            root.add(gPane, i, j);
+            
+            }
+         }
+      
+      
+      
+      for (int i=0; i<4; i++)
+         {
+         for(int j=0; j<4; j++)
+            {
+            System.out.println("pane " + i + " " + j + ", button: " );
+            moveCanBeMade(i, j);
+            
+            if (i==0 && j==2)
+               {
+               gPaneList[i][j].setVisibility(false, false, false, false, false);
+               } 
+  
+            }
+         }  
+         
+         
+      // print it out
+      Scene scene = new Scene(root, 600, 600);
+      stage.setScene(scene);
+      stage.setTitle("Ball game Project");
+      stage.show();
+   }
+   
+   private Label l;
+   private boolean ballB;
+   private boolean topB = false;
+   private boolean bottomB = false;
+   private boolean rightB = false;
+   private boolean leftB = false;
+   private int count = 14;
+   private GamePane gPane;
+   private GamePane gPaneList [][]= new GamePane [4][4];
+   
+   public void possibleMoves()
+      {   
+      boolean lost = true;
+      
+      for (int i=0; i<4; i++)
+               {
+               for (int j=0; j<4; j++)
+                  {
+                  
+                  lost = gPaneList[i][j].getVisibility();
+                  }
+               }
+
+      }
+   
+   public void moveCanBeMade(int i, int j)
+         {
+         leftB = false;
+         rightB = false;
+         topB = false;
+         bottomB = false;
+         //gPaneList[i][j].setVisibility(ballB, topB, bottomB, rightB, leftB);
+         
+                  if (gPaneList[i][j].getBallVisibility())
+                     {
+                     if (i<2)
+                        {
+                        if (gPaneList[i+1][j].getBallVisibility() && !gPaneList[i+2][j].getBallVisibility())
+                           {
+                           leftB = true;
+                           System.out.println("left Button Active");
+                           }
+                        }
+                     if (i>1)
+                        {
+                        if (gPaneList[i-1][j].getBallVisibility() && !gPaneList[i-2][j].getBallVisibility())
+                           {
+                           rightB = true;
+                           System.out.println("right Button Active");
+                           }
+                        }
+                     if (j<2)
+                        {
+                        if (gPaneList[i][j+1].getBallVisibility() && !gPaneList[i][j+2].getBallVisibility())
+                           {
+                           topB = true;
+                           System.out.println("top Button Active");
+                           }
+                        }
+                     if (j>1)
+                        {
+                        if (gPaneList[i][j-1].getBallVisibility() && !gPaneList[i][j-2].getBallVisibility())
+                           {
+                           bottomB = true;
+                           System.out.println("bottom Button Active");
+                           }
+                        }
+                     gPaneList[i][j].setVisibility(ballB, topB, bottomB, rightB, leftB);
+                     }
+                     
+                
+         }
+
+      public class GamePane extends GridPane{
+      
+      Button top = new Button();
+      Button bottom = new Button();
+      Button right = new Button();
+      Button left = new Button();
+
+      private boolean ballVisible = true;
+      private boolean topVisible = true;
+      private boolean bottomVisible = true;
+      private boolean rightVisible = true;
+      private boolean leftVisible = true;
+      private int i;
+      private int j;
+      
+      
+      private CircleCanvasProject circle = new CircleCanvasProject();
+      
+      public void checkAllButtons()
+      {
+      for (int i=0; i<4; i++)
+               {
+               for (int j=0; j<4; j++)
+                  {
+                  moveCanBeMade(i, j);
+                  }
+               }
+      }
+
+      public boolean getVisibility()
+         {
+         boolean tracker = false;
+         if (!leftVisible && !rightVisible && !bottomVisible && !topVisible)
+            {
+            return true;
+            }
+         return tracker;
+         }
+         
+      public void setVisibility(boolean ballVisible, boolean topVisible, boolean bottomVisible, boolean rightVisible, boolean leftVisible)
+         {
+         circle.setVisible(ballVisible);         
+         top.setVisible(topVisible);
+         bottom.setVisible(bottomVisible);
+         right.setVisible(rightVisible);
+         left.setVisible(leftVisible);
+         this.ballVisible = ballVisible;
+         this.topVisible = topVisible;
+         this.bottomVisible = bottomVisible;
+         this.rightVisible = rightVisible;
+         this.leftVisible = leftVisible;
+         }
+      
+            
+      public GamePane(int i, int j){
+         this.i = i;
+         this.j = j;
+         top.setMinWidth(80);
+         top.setMinHeight(20);
+         bottom.setMinWidth(80);
+         bottom.setMinHeight(20);
+         right.setMinWidth(20);
+         right.setMinHeight(80);
+         left.setMinWidth(20);
+         left.setMinHeight(80);
+         
+         
+         circle.draw();
+         add(circle, 1, 1);
+         top.setOnAction(new ButtonListener());
+         add(top, 1, 0);
+         bottom.setOnAction(new ButtonListener());
+         add(bottom, 1, 2);
+         right.setOnAction(new ButtonListener());
+         add(right,2 ,1);
+         left.setOnAction(new ButtonListener());
+         add(left,0, 1 );
+         
+         }
+      
+      public class ButtonListener implements EventHandler<ActionEvent>  
+      {
+         public void handle(ActionEvent e) 
+         {
+            if(e.getSource() == top)
+               {
+               System.out.println("ball " + i +" " + j + " jumped down");
+               gPaneList[i][j].setVisibility(false, false, false, false, false);
+               gPaneList[i][j+1].setVisibility(false, false, false, false, false);
+               gPaneList[i][j+2].setVisibility(true, false, false, false, false);
+               }
+               
+            if(e.getSource() == bottom)
+               {
+               System.out.println("ball " + i +" " + j + " jumped up");
+               gPaneList[i][j].setVisibility(false, false, false, false, false);
+               gPaneList[i][j-1].setVisibility(false, false, false, false, false);
+               gPaneList[i][j-2].setVisibility(true, false, false, false, false);
+               }
+               
+            if(e.getSource() == right)
+               {
+               System.out.println("ball " + i +" " + j + " jumped left");
+               gPaneList[i][j].setVisibility(false, false, false, false, false);
+               gPaneList[i-1][j].setVisibility(false, false, false, false, false);
+               gPaneList[i-2][j].setVisibility(true, false, false, false, false);
+               }
+               
+            if(e.getSource() == left)
+               {
+               System.out.println("ball " + i +" " + j + " jumped right");
+               gPaneList[i][j].setVisibility(false, false, false, false, false);
+               gPaneList[i+1][j].setVisibility(false, false, false, false, false);
+               gPaneList[i+2][j].setVisibility(true, false, false, false, false);
+               }
+            
+           checkAllButtons();
+           count--;
+
+            l.setText("balls left: " + count);
+            if (count == 0)
+               {
+               l.setText("you win!");
+               }
+
+         }
+      } 
+      
+      public boolean getBallVisibility()
+         {
+         return ballVisible;
+         }
+        
+      }
+
+
+   class CircleCanvasProject extends Canvas
+      {  
+      public CircleCanvasProject()
+         {
+         setWidth(80);
+         setHeight(80);
+         }
+      
+      public void draw()
+         {
+         GraphicsContext gc = getGraphicsContext2D();
+         gc.fillOval(0, 0, 80, 80);
+         }
+      }
+
+        
+   // launch arguments
+   public static void main(String[] args)
+   {
+      launch(args);
+   }
+}
+
