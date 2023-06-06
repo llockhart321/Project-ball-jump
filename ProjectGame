@@ -79,7 +79,7 @@ public class ProjectGame extends Application
    private boolean bottomB = false; // bottom button boolean
    private boolean rightB = false; // right button boolean
    private boolean leftB = false; // left button boolean
-   private int count = 14; // count how many balls are left
+   private int count = 15; // count how many balls are left
    private GamePane gPane; // game pane 
    private GamePane gPaneList [][]= new GamePane [4][4]; // 2d array of game panes
    
